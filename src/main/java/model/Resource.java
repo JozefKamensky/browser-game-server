@@ -1,3 +1,5 @@
+package model;
+
 public class Resource {
     private ResourceType type;
     private int amount;

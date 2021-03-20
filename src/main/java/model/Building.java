@@ -1,3 +1,5 @@
+package model;
+
 public class Building {
     private BuildingType type;
     private int level;
