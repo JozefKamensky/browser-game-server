@@ -4,6 +4,7 @@ public class VillageParameters {
     private int mainBuildingLevel;
     private int constructionProdLevel;
     private int trainingProdLevel;
+    private int supplyCenterLevel;
     private int barracksLevel;
     private int wallsLevel;
 
@@ -17,6 +18,7 @@ public class VillageParameters {
         this.mainBuildingLevel = 1;
         this.constructionProdLevel = 1;
         this.trainingProdLevel = 1;
+        this.supplyCenterLevel = 1;
         this.barracksLevel = 0;
         this.wallsLevel = 0;
 
@@ -27,10 +29,11 @@ public class VillageParameters {
         this.defensiveTroopsCount = 0;
     }
 
-    public void setBuildingLevels(int mainBuildingLevel, int constructionProdLevel, int trainingProdLevel, int barracksLevel, int wallsLevel) {
+    public void setBuildingLevels(int mainBuildingLevel, int constructionProdLevel, int trainingProdLevel, int supplyCenterLevel, int barracksLevel, int wallsLevel) {
         this.mainBuildingLevel = mainBuildingLevel;
         this.constructionProdLevel = constructionProdLevel;
         this.trainingProdLevel = trainingProdLevel;
+        this.supplyCenterLevel = supplyCenterLevel;
         this.barracksLevel = barracksLevel;
         this.wallsLevel = wallsLevel;
     }
@@ -67,6 +70,14 @@ public class VillageParameters {
 
     public void setTrainingProdLevel(int trainingProdLevel) {
         this.trainingProdLevel = trainingProdLevel;
+    }
+
+    public int getSupplyCenterLevel() {
+        return supplyCenterLevel;
+    }
+
+    public void setSupplyCenterLevel(int supplyCenterLevel) {
+        this.supplyCenterLevel = supplyCenterLevel;
     }
 
     public int getBarracksLevel() {

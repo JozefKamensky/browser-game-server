@@ -27,6 +27,7 @@ public class Village {
                 new Building(BuildingType.MAIN_BUILDING, parameters.getMainBuildingLevel()),
                 new Building(BuildingType.CONSTRUCTION_RESOURCE_PROD, parameters.getConstructionProdLevel()),
                 new Building(BuildingType.TRAINING_RESOURCE_PROD, parameters.getTrainingProdLevel()),
+                new Building(BuildingType.SUPPLY_CENTER, parameters.getSupplyCenterLevel()),
                 new Building(BuildingType.BARRACKS, parameters.getBarracksLevel()),
                 new Building(BuildingType.WALLS, parameters.getWallsLevel())
         );

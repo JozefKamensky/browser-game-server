@@ -39,7 +39,7 @@ class VillageTest {
     @Test
     void upgradeBuilding_shouldFail_forMaxLevelReached() {
         VillageParameters params = new VillageParameters();
-        params.setBuildingLevels(3,1,1,0,0);
+        params.setBuildingLevels(3,1,1, 1,0,0);
         Village village = new Village(PLAYER_ID, params);
         int beforeUpgrade = village.getBuildingLevels().get(BuildingType.MAIN_BUILDING);
         assertThrows(MaximumLevelOfBuildingReached.class, () ->  {
