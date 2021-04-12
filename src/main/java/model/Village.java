@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.BarracksNotBuiltException;
 import exceptions.MaximumLevelOfBuildingReached;
 import exceptions.MaximumNumberOfTroopsReached;
 import exceptions.NotEnoughResourcesException;
@@ -84,7 +85,13 @@ public class Village {
         return this.troops.stream().collect(Collectors.toMap(Troop::getType, Troop::getSize));
     }
 
-    public void trainTroops(TroopType type, Integer amount) throws MaximumNumberOfTroopsReached, NotEnoughResourcesException {
+    public void trainTroops(TroopType type, Integer amount) throws MaximumNumberOfTroopsReached, NotEnoughResourcesException, BarracksNotBuiltException {
+
+        int barracksLevel = this.buildings.stream().filter(b -> b.getType().equals(BuildingType.BARRACKS)).findFirst().orElseThrow().getLevel();
+        if (barracksLevel == 0) {
+            throw new BarracksNotBuiltException();
+        }
+
         int currentNumberOfTroops = this.troops.stream().map(Troop::getSize).reduce(Integer::sum).orElseThrow();
         int supplyCenterLevel = this.buildings.stream().filter(b -> b.getType().equals(BuildingType.SUPPLY_CENTER)).findFirst().orElseThrow().getLevel();
         int maxAllowedTroops = BuildingInfo.getTroopsLimit(supplyCenterLevel);

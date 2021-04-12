@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.BarracksNotBuiltException;
 import exceptions.MaximumLevelOfBuildingReached;
 import exceptions.MaximumNumberOfTroopsReached;
 import exceptions.NotEnoughResourcesException;
@@ -54,12 +55,13 @@ class VillageTest {
     void trainTroops_shouldPass() {
         VillageParameters params = new VillageParameters();
         params.setTroops(0, 0);
+        params.setBuildingLevels(1,0,0,1,1,0);
         params.setResources(0, 100);
         Village village = new Village(PLAYER_ID, params);
         int beforeTraining = village.getTroopCounts().get(TroopType.OFFENSIVE);
         try {
             village.trainTroops(TroopType.OFFENSIVE, 3);
-        } catch (MaximumNumberOfTroopsReached | NotEnoughResourcesException e) {
+        } catch (MaximumNumberOfTroopsReached | NotEnoughResourcesException | BarracksNotBuiltException e) {
             fail(e);
         }
         int afterTraining = village.getTroopCounts().get(TroopType.OFFENSIVE);
@@ -70,7 +72,7 @@ class VillageTest {
     void trainTroops_shouldFail_forMaxLimitReached() {
         VillageParameters params = new VillageParameters();
         params.setTroops(100, 0);
-        params.setBuildingLevels(0,0,0,1,0,0);
+        params.setBuildingLevels(0,0,0,1,1,0);
         Village village = new Village(PLAYER_ID, params);
         int beforeTraining = village.getTroopCounts().get(TroopType.OFFENSIVE);
         assertThrows(MaximumNumberOfTroopsReached.class, () -> {
@@ -84,10 +86,25 @@ class VillageTest {
     void trainTroops_shouldFail_forNotEnoughResources() {
         VillageParameters params = new VillageParameters();
         params.setTroops(10, 0);
+        params.setBuildingLevels(1,0,0,1,1,0);
         params.setResources(0,0);
         Village village = new Village(PLAYER_ID, params);
         int beforeTraining = village.getTroopCounts().get(TroopType.OFFENSIVE);
         assertThrows(NotEnoughResourcesException.class, () -> {
+            village.trainTroops(TroopType.OFFENSIVE, 1);
+        });
+        int afterTraining = village.getTroopCounts().get(TroopType.OFFENSIVE);
+        assertEquals(beforeTraining, afterTraining);
+    }
+
+    @Test
+    void trainTroops_shouldFail_forBarrackNotBuilt() {
+        VillageParameters params = new VillageParameters();
+        params.setTroops(10, 0);
+        params.setResources(0,0);
+        Village village = new Village(PLAYER_ID, params);
+        int beforeTraining = village.getTroopCounts().get(TroopType.OFFENSIVE);
+        assertThrows(BarracksNotBuiltException.class, () -> {
             village.trainTroops(TroopType.OFFENSIVE, 1);
         });
         int afterTraining = village.getTroopCounts().get(TroopType.OFFENSIVE);
