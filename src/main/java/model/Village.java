@@ -1,10 +1,10 @@
 package model;
 
 import exceptions.MaximumLevelOfBuildingReached;
+import exceptions.MaximumNumberOfTroopsReached;
 import exceptions.NotEnoughResourcesException;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,7 +22,7 @@ public class Village {
 
     public Village(int playerId, VillageParameters parameters) {
         this.playerId = playerId;
-        this.name = "model.Village 01";
+        this.name = "Village 01";
         this.buildings = Arrays.asList(
                 new Building(BuildingType.MAIN_BUILDING, parameters.getMainBuildingLevel()),
                 new Building(BuildingType.CONSTRUCTION_RESOURCE_PROD, parameters.getConstructionProdLevel()),
@@ -77,6 +77,32 @@ public class Village {
         Building buildingToUpgrade = this.buildings.stream().filter(b -> b.getType().equals(buildingType)).findFirst().orElseThrow();
         buildingToUpgrade.setLevel(buildingToUpgrade.getLevel() + 1);
         Resource resource = this.resources.stream().filter(r -> r.getType().equals(ResourceType.FOR_BUILDING)).findFirst().orElseThrow();
+        resource.setAmount(resource.getAmount() - resourcesNeeded);
+    }
+
+    public Map<TroopType, Integer> getTroopCounts() {
+        return this.troops.stream().collect(Collectors.toMap(Troop::getType, Troop::getSize));
+    }
+
+    public void trainTroops(TroopType type, Integer amount) throws MaximumNumberOfTroopsReached, NotEnoughResourcesException {
+        int currentNumberOfTroops = this.troops.stream().map(Troop::getSize).reduce(Integer::sum).orElseThrow();
+        int supplyCenterLevel = this.buildings.stream().filter(b -> b.getType().equals(BuildingType.SUPPLY_CENTER)).findFirst().orElseThrow().getLevel();
+        int maxAllowedTroops = BuildingInfo.getTroopsLimit(supplyCenterLevel);
+
+        if (currentNumberOfTroops + amount > maxAllowedTroops) {
+            throw new MaximumNumberOfTroopsReached();
+        }
+
+        int resourcesPresent = this.resources.stream().filter(r -> r.getType().equals(ResourceType.FOR_TRAINING)).findFirst().orElseThrow().getAmount();
+        int resourcesNeeded = amount * TroopInfo.getTroopCost(type);
+
+        if (resourcesPresent < resourcesNeeded) {
+            throw new NotEnoughResourcesException();
+        }
+
+        Troop troopsToAdd = this.troops.stream().filter(t -> t.getType().equals(type)).findFirst().orElseThrow();
+        troopsToAdd.setSize(troopsToAdd.getSize() + amount);
+        Resource resource = this.resources.stream().filter(r -> r.getType().equals(ResourceType.FOR_TRAINING)).findFirst().orElseThrow();
         resource.setAmount(resource.getAmount() - resourcesNeeded);
     }
 }
